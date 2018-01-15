@@ -17,7 +17,7 @@ import java.lang.Exception
 class LoginActivity : AppCompatActivity() {
 
     //Firebase
-    private lateinit var mAuthListener:FirebaseAuth.AuthStateListener
+    private lateinit var mAuthListener: FirebaseAuth.AuthStateListener
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,51 +26,64 @@ class LoginActivity : AppCompatActivity() {
         setupFirebase()
 
         btnEmail_sign_in_button.setOnClickListener {
-            if(etEmail.text.isNotEmpty() && etPassword.text.isNotEmpty()){
+            if (etEmail.text.isNotEmpty() && etPassword.text.isNotEmpty()) {
 
                 showProgressbar()
 
-                FirebaseAuth.getInstance().signInWithEmailAndPassword(etEmail.text.toString(),etPassword.text.toString())
-                        .addOnCompleteListener(object: OnCompleteListener<AuthResult> {
+                FirebaseAuth.getInstance().signInWithEmailAndPassword(etEmail.text.toString(), etPassword.text.toString())
+                        .addOnCompleteListener(object : OnCompleteListener<AuthResult> {
                             override fun onComplete(p0: Task<AuthResult>) {
-                              closeProgressBar()
-                                Toast.makeText(this@LoginActivity,"GİRİŞ YAPILDI:"+p0.isSuccessful,Toast.LENGTH_SHORT).show()
+                                closeProgressBar()
+                               // Toast.makeText(this@LoginActivity, "GİRİŞ YAPILDI:" + p0.isSuccessful, Toast.LENGTH_SHORT).show()
                             }
 
                         })
-                        .addOnFailureListener(object :OnFailureListener{
+                        .addOnFailureListener(object : OnFailureListener {
                             override fun onFailure(p0: Exception) {
-                               Toast.makeText(this@LoginActivity,"GİRİŞ YAPILAMADI:"+p0.message,Toast.LENGTH_SHORT).show()
+                                Toast.makeText(this@LoginActivity, "GİRİŞ YAPILAMADI:" + p0.message, Toast.LENGTH_SHORT).show()
                                 closeProgressBar()
                             }
 
                         })
 
 
-            }else{
-                Toast.makeText(this,"Tüm alanları doldurun",Toast.LENGTH_LONG).show()
+            } else {
+                Toast.makeText(this, "Tüm alanları doldurun", Toast.LENGTH_LONG).show()
             }
         }
 
 
         tvlink_register.setOnClickListener {
-            var intent=Intent(this,RegisterActivity::class.java)
+            var intent = Intent(this, RegisterActivity::class.java)
             startActivity(intent)
+        }
+
+        tvresend_verification_email.setOnClickListener {
+            val dialog = ResendVerificationDialog()
+            dialog.show(supportFragmentManager, "dialog_resend_email_verification")
         }
     }
 
     //FIREBASE SETUP
-    private fun setupFirebase(){
+    private fun setupFirebase() {
 
-        mAuthListener= object : FirebaseAuth.AuthStateListener{
+        mAuthListener = object : FirebaseAuth.AuthStateListener {
 
             override fun onAuthStateChanged(p0: FirebaseAuth) {
-                var user=p0.currentUser
+                var user = p0.currentUser
 
-                if(user!=null){
-                    Toast.makeText(this@LoginActivity,"USER ID : "+user.uid,Toast.LENGTH_LONG).show()
-                }else{
-                    Toast.makeText(this@LoginActivity,"ÇIKIŞ YAPILDI : ",Toast.LENGTH_LONG).show()
+                if (user != null) {
+
+                    if (user.isEmailVerified) {
+                        Toast.makeText(this@LoginActivity, "MAIL ONAYLI BIRAKIN GIRSIN : " + user.uid, Toast.LENGTH_LONG).show()
+                    }else{
+                        Toast.makeText(this@LoginActivity, "Mailinizi onaylayın : ", Toast.LENGTH_LONG).show()
+                        FirebaseAuth.getInstance().signOut()
+                    }
+
+
+                } else {
+                    Toast.makeText(this@LoginActivity, "ÇIKIŞ YAPILDI : ", Toast.LENGTH_LONG).show()
                 }
             }
 
@@ -79,7 +92,7 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onStop() {
         super.onStop()
-        if(mAuthListener != null){
+        if (mAuthListener != null) {
             FirebaseAuth.getInstance().removeAuthStateListener(mAuthListener)
         }
     }

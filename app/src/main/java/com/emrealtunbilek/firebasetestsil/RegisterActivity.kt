@@ -4,8 +4,13 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_register.*
+import android.content.Intent
+
+
 
 class RegisterActivity : AppCompatActivity() {
 
@@ -45,12 +50,36 @@ class RegisterActivity : AppCompatActivity() {
             if (v.isSuccessful) {
                 Toast.makeText(this, "OTURUM  :" + FirebaseAuth.getInstance().currentUser?.uid, Toast.LENGTH_LONG).show()
 
+                sendVerificationEmail()
+
                 FirebaseAuth.getInstance().signOut()
-            }else{
-                Toast.makeText(this, "EKLENEMEDİ :"+v.exception?.message, Toast.LENGTH_SHORT).show()
+                reDirectLoginPage()
+
+
+            } else {
+                Toast.makeText(this, "EKLENEMEDİ :" + v.exception?.message, Toast.LENGTH_SHORT).show()
             }
         }
         closeProgressBar()
+    }
+
+    fun sendVerificationEmail() {
+
+        var user = FirebaseAuth.getInstance().currentUser
+        if (user != null) {
+            user?.sendEmailVerification()?.addOnCompleteListener(object : OnCompleteListener<Void> {
+                override fun onComplete(p0: Task<Void>) {
+                    if (p0.isSuccessful) {
+                        Toast.makeText(this@RegisterActivity, "Onaylama maili atıldı lütfen kontrol ediniz", Toast.LENGTH_LONG).show()
+                    } else {
+                        Toast.makeText(this@RegisterActivity, "Sorun oldu mail atılamadı", Toast.LENGTH_LONG).show()
+                    }
+                }
+
+            })
+        }
+
+
     }
 
     public fun showProgressbar() {
@@ -61,5 +90,11 @@ class RegisterActivity : AppCompatActivity() {
 
     public fun closeProgressBar() {
         progressBar.visibility = View.INVISIBLE
+    }
+
+    fun reDirectLoginPage(){
+        val intent = Intent(this@RegisterActivity, LoginActivity::class.java)
+        startActivity(intent)
+        finish()
     }
 }
