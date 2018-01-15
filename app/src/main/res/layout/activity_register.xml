@@ -27,36 +27,36 @@
             android:textColor="@color/Black"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="30dp"
-            android:id="@+id/textEmailReg"/>
+            android:id="@+id/tvEmailReg"/>
 
 
             <EditText
-                android:id="@+id/input_email"
+                android:id="@+id/et_input_email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
                 android:inputType="textEmailAddress"
                 android:hint="@string/prompt_email"
-                android:layout_below="@+id/textEmailReg"/>
+                android:layout_below="@+id/tvEmailReg"/>
 
 
             <EditText
-                android:id="@+id/input_password"
+                android:id="@+id/et_input_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:inputType="textPassword"
                 android:hint="@string/password"
-                android:layout_below="@+id/input_email"/>
+                android:layout_below="@+id/et_input_email"/>
 
         <EditText
-            android:id="@+id/input_confirm_password"
+            android:id="@+id/et_input_confirm_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:inputType="textPassword"
             android:hint="@string/confirm_password"
-            android:layout_below="@+id/input_password"/>
+            android:layout_below="@+id/et_input_password"/>
 
 
         <android.support.v7.widget.AppCompatButton
@@ -64,7 +64,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="35dp"
-            android:layout_below="@+id/input_confirm_password"
+            android:layout_below="@+id/et_input_confirm_password"
             android:text="@string/register"
             android:background="@drawable/blue_button"/>
 
